@@ -1,8 +1,13 @@
 import { ReactNode } from "react";
 import { Loading } from "./Loading"
 import ReportIcon from '@mui/icons-material/Report';
-import { EHttpStatus } from "../util/api/http";
 
+//http statuses
+export enum EHttpStatus{
+    Loading = 'loading',
+    Rejected = 'rejected',
+    Fulfilled = 'fulfilled'
+}
 /**
  * describes visually the current state of an http request
  * @param status the http request current status 

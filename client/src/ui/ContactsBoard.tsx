@@ -8,31 +8,16 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { ContactsList } from './ContactsList';
 import { JSX } from 'react';
-import { contactsStore } from '../util/stores/contactsStore';
+import { contactsStore } from '../util/stores/contacts.store';
+import { useScroll } from '../hooks/useScroll';
 
 export const ContactsBoard: React.FC = () => {
   
   const tableNames: string[] = ["Full Name", "Phone Number", "Email", "Tags", ""];
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = useScroll(contactsStore);
 
   React.useEffect(() => {
     contactsStore.init();
-  }, []);
-
-  React.useEffect(() => {
-  const handleScroll = () => {
-    console.log("scroll");
-    const threshold = 100;
-    if (
-      window.innerHeight + document.documentElement.scrollTop + threshold >=
-      document.documentElement.offsetHeight
-    ) {
-      contactsStore.loadMore();
-    }
-  };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const renderHeaderCells = (): JSX.Element[] =>
@@ -44,32 +29,6 @@ export const ContactsBoard: React.FC = () => {
       {name}
     </TableCell>
   ));
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      const container = containerRef.current;
-      if (!container) return;
-
-      const threshold = 100;
-      const scrollBottom = container.scrollTop + container.clientHeight;
-      const scrollHeight = container.scrollHeight;
-
-      if (scrollBottom + threshold >= scrollHeight && contactsStore.hasMore && !contactsStore.loading) {
-        contactsStore.loadMore();
-      }
-    };
-
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, []);
 
   return (
     <TableContainer component={Paper} elevation={5} ref={containerRef} sx={{

@@ -10,7 +10,8 @@ import {
   Box,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { IContact, ITag } from '../util/entity/contact';
+import { IContact } from '../util/entity/contact.entity';
+import { ITag } from '../util/entity/tag.entity';
 
 interface ContactModalFormProps {
   open: boolean;

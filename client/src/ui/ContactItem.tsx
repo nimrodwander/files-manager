@@ -2,7 +2,7 @@ import * as React from 'react';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { observer } from 'mobx-react-lite';
-import { IContact } from '../util/entity/contact';
+import { IContact } from '../util/entity/contact.entity';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from '@mui/material';
 
