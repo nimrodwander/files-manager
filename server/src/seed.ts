@@ -11,7 +11,10 @@ async function seed() {
   const tagRepo = AppDataSource.getRepository(Tag);
   const contactRepo = AppDataSource.getRepository(Contact);
 
-  // Create static tags if not already present
+  await contactRepo.createQueryBuilder().delete().execute();
+
+  await tagRepo.createQueryBuilder().delete().execute();
+
   const tagEntities: Tag[] = [];
 
   for (const name of TAGS) {
@@ -23,7 +26,6 @@ async function seed() {
     tagEntities.push(tag);
   }
 
-  // Create 150 random contacts with 1–3 random tags
   for (let i = 0; i < 150; i++) {
     const contact = contactRepo.create({
       fullName: faker.person.fullName(),
@@ -31,6 +33,7 @@ async function seed() {
       phoneNumber: faker.phone.number(),
       tags: getRandomTags(tagEntities),
     });
+
     await contactRepo.save(contact);
     console.log(`Contact created: ${contact.fullName}`);
   }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, Index } from "typeorm";
 import { Tag } from "./tag";
 
 @Entity()
@@ -14,6 +14,10 @@ export class Contact {
 
   @Column()
   phoneNumber!: string;
+
+  @CreateDateColumn()
+  @Index()
+  createdAt!: Date;
 
   @ManyToMany(() => Tag, (tag) => tag.contacts, { eager: true })
   @JoinTable()

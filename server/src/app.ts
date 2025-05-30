@@ -6,7 +6,6 @@ import cors from "cors";
 AppDataSource.initialize()
   .then(() => {
     console.log("Data Source has been initialized!");
-    // Now you can run queries or start your app
   })
   .catch((err) => {
     console.error("Error during Data Source initialization", err);
@@ -17,30 +16,11 @@ const port = 5000;
 
 app.use(cors());
 
-// Middleware to handle JSON
 app.use(express.json());
 
-// Example route
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, world!');
 });
-
-
-/*app.get('/contacts', async (req: Request, res: Response) => {
-  try {
-    const contactRepo = AppDataSource.getRepository(Contact);
-
-    const contacts = await contactRepo.find({
-      take: 20,
-      relations: ['tags'], // include related tags if needed
-    });
-
-    res.json(contacts);
-  } catch (error) {
-    console.error('Error fetching contacts:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});*/
 
 app.get("/contacts", async (req: Request, res: Response) => {
   try {
@@ -53,9 +33,9 @@ app.get("/contacts", async (req: Request, res: Response) => {
     const [contacts, total] = await contactRepo.findAndCount({
       skip: offset,
       take: limit,
-      relations: ["tags"], // if you're including related entities like tags
+      relations: ["tags"],
       order: {
-        fullName: "ASC", // optional sorting
+        createdAt: "ASC",
       },
     });
 
@@ -71,7 +51,6 @@ app.get("/contacts", async (req: Request, res: Response) => {
   }
 });
 
-// Start server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
