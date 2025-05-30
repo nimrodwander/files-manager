@@ -7,6 +7,13 @@ export interface IContact{
   id: string,
   fullName: string,
   email: string,
-  phoneNumber: number;
-  tags: ITag[];
+  phoneNumber: number,
+  tags: ITag[]
+}
+
+export interface IGetRequest{
+  data: IContact[],
+  total: number,
+  page: number,
+  totalPages: number
 }
