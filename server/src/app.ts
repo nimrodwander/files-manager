@@ -108,6 +108,17 @@ app.delete('/contacts/:id', async (req: Request, res: Response): Promise<any> =>
   }
 });
 
+app.get('/tags', async (req: Request, res: Response) => {
+  try {
+    const tagRepo = AppDataSource.getRepository(Tag);
+    const tags = await tagRepo.find(); // fetch all tags
+    res.json({data: tags});
+  } catch (error) {
+    console.error('Error fetching tags:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

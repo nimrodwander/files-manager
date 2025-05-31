@@ -6,9 +6,5 @@ export interface IPaginationStore {
 }
 
 export interface IStore{
-  init(): Promise<void>;
-  createOne(): Promise<void>;
-  updateOne(): Promise<void>;
-  getMany(): Promise<void>;
-  getOne(): Promise<void>;
+  init: () => Promise<void>;
 }

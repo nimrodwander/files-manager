@@ -1,11 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IContact } from "../entity/contact.entity";
 import { ApiService } from "../api/api.service";
-import { IPaginationStore } from "./abstract.store";
-import { IDeleteRequest, IGetRequest, IUpdateRequest } from "./contacts.store.types";
+import { IPaginationStore, IStore } from "./abstract.store";
+import { IContactDeleteResponse, IContactGetResponse, IContactUpdateRequest } from "./contacts.types";
 import { Logger } from "../errors";
 
-export class ContactsStore implements IPaginationStore{
+export class ContactsStore implements IStore, IPaginationStore{
   private readonly _api: ApiService = new ApiService();
   private readonly _limit: number = 20;
   private _contacts: Map<string, IContact> = new Map<string, IContact>();
@@ -38,7 +38,7 @@ export class ContactsStore implements IPaginationStore{
 
   public async updateOne(id: string, payload: IContact): Promise<void>{
     this._isLoading = true;
-    const result: IUpdateRequest = await this._api.post<IContact, IUpdateRequest>(`/contacts/${id}`, payload);
+    const result: IContactUpdateRequest = await this._api.post<IContact, IContactUpdateRequest>(`/contacts/${id}`, payload);
     const contact: IContact = result.data; 
     
     runInAction((): void => {
@@ -49,13 +49,14 @@ export class ContactsStore implements IPaginationStore{
 
   public async deleteOne(id: string): Promise<void>{
     this._isLoading = true;
-    const result: IDeleteRequest = await this._api.delete<IDeleteRequest>(`/contacts/${id}`);
+    const result: IContactDeleteResponse = await this._api.delete<IContactDeleteResponse>(`/contacts/${id}`);
 
     runInAction((): void => {
       this._contacts.delete(result.data.id);
       this._isLoading = false;
     });
   }
+
 
   public async loadNext(): Promise<void> {
 
@@ -65,7 +66,7 @@ export class ContactsStore implements IPaginationStore{
     }
 
     this._isLoading = true;
-    const result: IGetRequest = await this._api.get<IGetRequest>(`/contacts/?page=${this._currentPage}&limit=${this._limit}`);
+    const result: IContactGetResponse = await this._api.get<IContactGetResponse>(`/contacts/?page=${this._currentPage}&limit=${this._limit}`);
     const contacts: IContact[] = result.data;
     
     runInAction((): void => {
@@ -77,7 +78,7 @@ export class ContactsStore implements IPaginationStore{
   }
 
   public async init(): Promise<void>{
-    const result: IGetRequest = await this._api.get<IGetRequest>(`/contacts?page=${this._currentPage}&limit=${this._limit}`);
+    const result: IContactGetResponse = await this._api.get<IContactGetResponse>(`/contacts?page=${this._currentPage}&limit=${this._limit}`);
     const contacts: IContact[] = result.data;
     
     runInAction((): void => {

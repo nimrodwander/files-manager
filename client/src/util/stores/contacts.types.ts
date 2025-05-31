@@ -1,16 +1,16 @@
 import { IContact } from "../entity/contact.entity";
 
-export interface IGetRequest{
+export interface IContactUpdateRequest{
+  data: IContact;
+}
+
+export interface IContactGetResponse{
   data: IContact[],
   total: number,
   page: number,
   totalPages: number
 }
 
-export interface IUpdateRequest{
-  data: IContact;
-}
-
-export interface IDeleteRequest{
+export interface IContactDeleteResponse{
   data: {readonly id: string}
 }
