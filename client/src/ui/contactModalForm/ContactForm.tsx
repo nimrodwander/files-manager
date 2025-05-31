@@ -21,7 +21,6 @@ import { ITag } from '../../util/entity/tag.entity';
 import { useNavigate, useParams } from 'react-router-dom';
 import { contactsStore } from '../../util/stores/contacts.store';
 import { SelectChangeEvent, SelectInputProps } from '@mui/material/Select/SelectInput';
-import { ContactFormConverter } from './ContactForm.converter';
 import { IContactForm } from './contactForm.types';
 import { tagsStore } from '../../util/stores/tags.store';
 
@@ -31,16 +30,26 @@ export const ContactForm: React.FC = () => {
   const tagOptions: ITag[] = tagsStore.tags;
   
   const [tags, setTags] = useState<ITag[]>([]);
-  
+  const [fullName, setFullName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+
   const onSubmit = () => {
-    // const contact: IContact = contactFormConverter.fromForm(getValues());
-    // if(id){
-    //   contactsStore.updateOne(id, contact);
-    // }
-    // else{
-    //   contactsStore.createOne(contact);
-    // }
-    // navigate(-1);
+    const contact: IContact = {
+      id: '',
+      fullName: fullName,
+      email: email,
+      phoneNumber: phoneNumber,
+      tags: tags
+    }
+    
+    if(id){
+      contactsStore.updateOne(id, contact);
+    }
+    else{
+      contactsStore.createOne(contact);
+    }
+    navigate(-1);
   }
 
   const onClose = () => {
@@ -61,7 +70,40 @@ export const ContactForm: React.FC = () => {
       <Box component="form" onSubmit={onSubmit}>
         <DialogContent dividers>
 
-              {/* Select Tags Input Fields*/}
+              {/* Full Name Field */}
+              <FormControl fullWidth margin="normal">
+                <TextField
+                  placeholder="Full Name"
+                  variant="standard"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
+              </FormControl>
+
+              
+              {/* Email Field */}
+              <FormControl fullWidth margin="normal">
+                <TextField
+                  placeholder="Email"
+                  variant="standard"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </FormControl>
+
+
+              {/* Phone Number Field */}
+              <FormControl fullWidth margin="normal">
+                <TextField
+                  placeholder="Phone Number"
+                  variant="standard"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </FormControl>
+              
+
+              {/* Select Tags Input Field*/}
               <FormControl fullWidth>
                 <Select
                   multiple

@@ -2,7 +2,7 @@ import { IContact } from "../../util/entity/contact.entity";
 import { ITag } from "../../util/entity/tag.entity";
 import { IContactForm } from "./contactForm.types";
 
-export class ContactFormConverter{
+/*export class ContactFormConverter{
   public toForm(entityValues: IContact | undefined): IContactForm{
     if(entityValues === undefined){
         entityValues = this._fallbackValuesInit();
@@ -38,4 +38,4 @@ export class ContactFormConverter{
         }
         return newContact;
     }
-}
+}*/

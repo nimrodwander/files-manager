@@ -4,6 +4,6 @@ export interface IContact{
   readonly id: string,
   fullName: string,
   email: string,
-  phoneNumber: number,
+  phoneNumber: string,
   tags: ITag[]
 }
