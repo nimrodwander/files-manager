@@ -1,11 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { IContact } from "../entity/contact.entity";
-import { Api } from "../api/api.service";
+import { ApiService } from "../api/api.service";
 import { IPaginationStore } from "./abstract.store";
-import { IGetRequest } from "./contacts.types";
+import { IGetRequest, IUpdateRequest } from "./contacts.store.types";
+import { Logger } from "../errors";
 
 export class ContactsStore implements IPaginationStore{
-  private readonly _api: Api = new Api();
+  private readonly _api: ApiService = new ApiService();
   private readonly _limit: number = 20;
   private _contacts: Map<string, IContact> = new Map<string, IContact>();
   private _currentPage: number = 1;
@@ -18,6 +19,32 @@ export class ContactsStore implements IPaginationStore{
 
   private _nextPage(): void{
       this._currentPage = this._currentPage + 1;
+  }
+
+  public async createOne(payload: IContact): Promise<void>{
+
+  }
+
+  
+  public getOne(id: string): IContact{
+    const contact: undefined | IContact = this._contacts.get(id);
+    
+    if(contact === undefined){
+      throw Logger.error("Could not find contact");
+    }
+
+    return contact;
+  }
+
+  public async updateOne(id: string, payload: IContact): Promise<void>{
+    this._isLoading = true;
+    const result: IUpdateRequest = await this._api.post<IContact, IUpdateRequest>(`/contacts/${id}`, payload);
+    const contact: IContact = result.data; 
+    
+    runInAction((): void => {
+      this._contacts = this._contacts.set(contact.id, contact);
+      this._isLoading = false;
+    });
   }
 
   public async loadNext(): Promise<void> {

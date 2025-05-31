@@ -16,10 +16,6 @@ export const ContactsBoard: React.FC = () => {
   const tableNames: string[] = ["Full Name", "Phone Number", "Email", "Tags", ""];
   const containerRef = useScroll(contactsStore);
 
-  React.useEffect(() => {
-    contactsStore.init();
-  }, []);
-
   const renderHeaderCells = (): JSX.Element[] =>
   tableNames.map((name) => (
     <TableCell

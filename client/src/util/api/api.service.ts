@@ -2,25 +2,25 @@ import axios from "axios";
 import { API_URL } from "../config";
 import { CatchHttpError, get, post, put } from "./api.functions";
 
-export class Api {
+export class ApiService {
   //specify the base url of the api
   private readonly _apiUrl: string = API_URL;
   
   @CatchHttpError(get)
-  public async get<T>(path: string): Promise<T>{
-    const response = await axios.get<T>(`${this._apiUrl}${path}`);
+  public async get<TResponse>(path: string): Promise<TResponse>{
+    const response = await axios.get<TResponse>(`${this._apiUrl}${path}`);
     return response.data;
   }
 
   @CatchHttpError(put)
-  public async put<T>(path: string, payload: T): Promise<T>{
-      const response = await axios.put<T>(`${this._apiUrl}${path}`, payload);
+  public async put<TPayload, TResponse>(path: string, payload: TPayload): Promise<TResponse>{
+      const response = await axios.put<TResponse>(`${this._apiUrl}${path}`, payload);
       return response.data;
   }
 
   @CatchHttpError(post)
-  public async post<T>(path: string, payload: T): Promise<T>{
-      const response = await axios.post<T>(`${this._apiUrl}${path}`, payload);
+  public async post<TPayload, TResponse>(path: string, payload: TPayload): Promise<TResponse>{
+      const response = await axios.post<TResponse>(`${this._apiUrl}${path}`, payload);
       return response.data;
   }
 }

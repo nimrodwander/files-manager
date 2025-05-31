@@ -13,7 +13,6 @@ export enum EHttpStatus{
  * @param status the http request current status 
  */
 export const AsyncWrapper: React.FC<{children: ReactNode, status: EHttpStatus}> = (props) => {
-
     return<>
     {props.status === EHttpStatus.Loading && <Loading/>}
     {props.status === EHttpStatus.Rejected && <ReportIcon color='inherit'/>}

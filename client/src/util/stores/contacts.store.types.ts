@@ -6,3 +6,7 @@ export interface IGetRequest{
   page: number,
   totalPages: number
 }
+
+export interface IUpdateRequest{
+  data: IContact;
+}

@@ -1,7 +1,8 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import { AppDataSource } from "./data-source";
 import { Contact } from './entity/contact';
 import cors from "cors";
+import { Tag } from './entity/tag';
 
 AppDataSource.initialize()
   .then(() => {
@@ -17,6 +18,8 @@ const port = 5000;
 app.use(cors());
 
 app.use(express.json());
+
+
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, world!');
@@ -48,6 +51,40 @@ app.get("/contacts", async (req: Request, res: Response) => {
   } catch (err) {
     console.error("Error fetching contacts:", err);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.put('/contacts/:id', async (req: Request, res: Response): Promise<any> => {
+  const id = req.params.id;
+  const { fullName, phoneNumber, email, tags } = req.body;
+  const contactRepo = AppDataSource.getRepository(Contact);
+
+  try {
+    const contact = await contactRepo.findOne({
+      where: { id },
+      relations: ['tags'],
+    });
+
+    if (!contact) {
+      return res.status(404).json({ message: 'Contact not found' });
+    }
+
+    contact.fullName = fullName;
+    contact.phoneNumber = phoneNumber;
+    contact.email = email;
+
+    const tagRepo = AppDataSource.getRepository(Tag);
+    // Handle tags (assume tags is an array of tag IDs)
+    if (Array.isArray(tags)) {
+      contact.tags = await tagRepo.findByIds(tags.map((t: any) => t.id || t));
+    }
+
+    await contactRepo.save(contact);
+
+    return res.json(contact);
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 });
 

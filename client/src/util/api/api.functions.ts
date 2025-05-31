@@ -29,7 +29,7 @@ export function CatchHttpError(handler?: (error: any) => void) {
 }
 
 export const get = (): void => {
-    Logger.error("Could not get data");
+    throw Logger.error("Could not get data");
 }
 
 export const put = (): void => {
@@ -37,9 +37,9 @@ export const put = (): void => {
 }
 
 export const post = (): void => {
-    Logger.error("Could not post data");
+    throw Logger.error("Could not post data");
 }
 
 export const remove = (): void => {
-    Logger.error("Could not delete data");
+    throw Logger.error("Could not delete data");
 }
