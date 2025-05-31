@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_URL } from "../config";
-import { CatchHttpError, get, post, put } from "./api.functions";
+import { CatchHttpError, get, post, put, remove } from "./api.functions";
 
 export class ApiService {
   //specify the base url of the api
@@ -21,6 +21,12 @@ export class ApiService {
   @CatchHttpError(post)
   public async post<TPayload, TResponse>(path: string, payload: TPayload): Promise<TResponse>{
       const response = await axios.post<TResponse>(`${this._apiUrl}${path}`, payload);
+      return response.data;
+  }
+
+  @CatchHttpError(remove)
+  public async delete<TResponse>(path: string): Promise<TResponse>{
+      const response = await axios.delete<TResponse>(`${this._apiUrl}${path}`);
       return response.data;
   }
 }

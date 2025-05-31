@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { IContact } from "../entity/contact.entity";
 import { ApiService } from "../api/api.service";
 import { IPaginationStore } from "./abstract.store";
-import { IGetRequest, IUpdateRequest } from "./contacts.store.types";
+import { IDeleteRequest, IGetRequest, IUpdateRequest } from "./contacts.store.types";
 import { Logger } from "../errors";
 
 export class ContactsStore implements IPaginationStore{
@@ -43,6 +43,16 @@ export class ContactsStore implements IPaginationStore{
     
     runInAction((): void => {
       this._contacts = this._contacts.set(contact.id, contact);
+      this._isLoading = false;
+    });
+  }
+
+  public async deleteOne(id: string): Promise<void>{
+    this._isLoading = true;
+    const result: IDeleteRequest = await this._api.delete<IDeleteRequest>(`/contacts/${id}`);
+
+    runInAction((): void => {
+      this._contacts.delete(result.data.id);
       this._isLoading = false;
     });
   }

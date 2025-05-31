@@ -88,6 +88,26 @@ app.put('/contacts/:id', async (req: Request, res: Response): Promise<any> => {
   }
 });
 
+app.delete('/contacts/:id', async (req: Request, res: Response): Promise<any> => {
+  const id = req.params.id;
+  const contactRepo = AppDataSource.getRepository(Contact);
+
+  try {
+    const contact = await contactRepo.findOne({ where: { id } });
+
+    if (!contact) {
+      return res.status(404).json({ message: 'Contact not found' });
+    }
+
+    await contactRepo.remove(contact);
+
+    return res.status(200).json({ data: {id: id} });
+  } catch (error) {
+    console.error('Error deleting contact:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

@@ -10,3 +10,7 @@ export interface IGetRequest{
 export interface IUpdateRequest{
   data: IContact;
 }
+
+export interface IDeleteRequest{
+  data: {readonly id: string}
+}
