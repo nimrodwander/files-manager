@@ -18,7 +18,8 @@ export const App: React.FC = () => {
       <Container>
       <Routes>
         <Route path="/" element={<Navigate to="/contacts" replace />} />
-        <Route path="/contacts/:id" element={<ContactForm />} />
+        <Route path="/contacts/contact-form" element={<ContactForm />} />
+        <Route path="/contacts/contact-form/:id" element={<ContactForm />} />
         <Route path="/contacts" element={<ContactsBoard />} />
       </Routes>
       </Container>

@@ -11,7 +11,7 @@ export const ContactItem: React.FC<{contact: IContact}> = (props) => {
   const navigate = useNavigate();
 
   const handleEditIconOnClick = () => {
-    navigate(`/contacts/${props.contact.id}`);
+    navigate(`/contacts/contact-form/${props.contact.id}`);
   };
 
   const handleDeleteIconOnClick = () => {

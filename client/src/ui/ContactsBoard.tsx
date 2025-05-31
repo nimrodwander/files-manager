@@ -10,21 +10,29 @@ import { ContactsList } from './ContactsList';
 import { JSX } from 'react';
 import { contactsStore } from '../util/stores/contacts.store';
 import { useScroll } from '../hooks/useScroll';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export const ContactsBoard: React.FC = () => {
   
-  const tableNames: string[] = ["Full Name", "Phone Number", "Email", "Tags", ""];
+  const tableNames: string[] = ["Full Name", "Phone Number", "Email", "Tags"];
   const containerRef = useScroll(contactsStore);
+  const navigate = useNavigate();
 
-  const renderHeaderCells = (): JSX.Element[] =>
-  tableNames.map((name) => (
+  const renderHeaderCells = (): JSX.Element[] =>{
+    return tableNames.map((name) => (
     <TableCell
       key={name}
       sx={{backgroundColor: "#2C2C2C"}}
     >
       {name}
     </TableCell>
-  ));
+    ))
+  }
+
+  const handleAddNewOnClick = () => {
+    navigate('/contacts/contact-form');
+  }
 
   return (
     <TableContainer component={Paper} elevation={5} ref={containerRef} sx={{
@@ -45,6 +53,9 @@ export const ContactsBoard: React.FC = () => {
         <TableHead>
           <TableRow>
             {renderHeaderCells()}
+            <TableCell sx={{backgroundColor: "#2C2C2C"}}>
+              <Button onClick={handleAddNewOnClick} variant="contained">Add New</Button>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
