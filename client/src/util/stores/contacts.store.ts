@@ -108,10 +108,6 @@ export class ContactsStore implements IStore, IPaginationStore{
     return this._isLoading;
   }
 
-  public get contacts(): IContact[]{
-    return Array.from(this._contacts.values());
-  }
-
   public get contactsIds(): string[]{
     return Array.from(this._contacts.keys());
   }

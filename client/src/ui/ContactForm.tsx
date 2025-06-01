@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,134 +7,153 @@ import {
   Button,
   TextField,
   Box,
-  InputLabel,
   Select,
   Input,
   MenuItem,
   Checkbox,
   ListItemText,
   FormControl,
+  InputLabel,
 } from '@mui/material';
 import { IContact } from '../util/entity/contact.entity';
 import { ITag } from '../util/entity/tag.entity';
 import { useNavigate, useParams } from 'react-router-dom';
 import { contactsStore } from '../util/stores/contacts.store';
-import { SelectChangeEvent, SelectInputProps } from '@mui/material/Select/SelectInput';
+import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import { tagsStore } from '../util/stores/tags.store';
 
 export const ContactForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const tagOptions: ITag[] = tagsStore.tags;
-  
-  const [tags, setTags] = useState<ITag[]>([]);
-  const [fullName, setFullName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const cancelTitle: string = 'Cancel';
+  const saveTitle: string = 'Save';
 
-  const onSubmit = () => {
-    console.log(id);
-    const contact: IContact = {
-      id: id || '',
-      fullName: fullName,
-      email: email,
-      phoneNumber: phoneNumber,
-      tags: tags
+  const initDefaultValues = (): IContact => {
+    if (id) {
+      const contact: IContact = contactsStore.getOne(id);
+      return {
+        id: contact.id,
+        fullName: contact.fullName,
+        email: contact.email,
+        phoneNumber: contact.phoneNumber,
+        tags: contact.tags,
+      };
+    } else {
+      return {
+        id: '',
+        fullName: '',
+        email: '',
+        phoneNumber: '',
+        tags: [],
+      };
     }
+  };
 
-    console.log(contact);
+  const [formData, setFormData] = useState<IContact>(initDefaultValues());
 
-    if(id){
-      contactsStore.updateOne(id, contact);
-    }
-    else{
-      contactsStore.createOne(contact);
-    }
-    navigate(-1);
-  }
-
-  const onClose = () => {
-    navigate(-1);
-  }
+  const updateField = <K extends keyof IContact>(key: K, value: IContact[K]) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleMultiSelectChange = (event: SelectChangeEvent<string[]>) => {
     const selectedIds = event.target.value as string[];
-    const selectedTags = tagOptions.filter(tag => selectedIds.includes(tag.id));
-    setTags(selectedTags);
+    const selectedTags = tagOptions.filter((tag) => selectedIds.includes(tag.id));
+    updateField('tags', selectedTags);
   };
 
-  const selectedIds = tags.map(tag => tag.id);
+  const selectedIds = formData.tags.map((tag) => tag.id);
+
+  const onSubmit = () => {
+    const contact: IContact = {
+      ...formData,
+      id: id || '',
+    };
+
+    if (id) {
+      contactsStore.updateOne(id, contact);
+    } else {
+      contactsStore.createOne(contact);
+    }
+
+    navigate(-1);
+  };
+
+  const onClose = () => {
+    navigate(-1);
+  };
+
+  const formTitle = id ? 'Edit Contact' : 'Add New Contact';
+
+  const renderValue = (selected: string[]): React.ReactNode => {
+
+    const selectedNames = tagOptions
+      .filter((tag) => selected.includes(tag.id))
+      .map((tag) => tag.name);
+    return selectedNames.join(', ');
+  };
 
   return (
     <Dialog open={true} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Edit Contact</DialogTitle>
+      <DialogTitle>{formTitle}</DialogTitle>
       <Box>
         <DialogContent dividers>
 
-              {/* Full Name Field */}
-              <FormControl fullWidth margin="normal">
-                <TextField
-                  placeholder="Full Name"
-                  variant="standard"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                />
-              </FormControl>
+          {/* Full Name Field */}
+          <FormControl fullWidth margin="normal">
+            <TextField
+              label="Full Name"
+              variant="standard"
+              value={formData.fullName}
+              onChange={(e) => updateField('fullName', e.target.value)}
+            />
+          </FormControl>
 
+          {/* Phone Number Field */}
+          <FormControl fullWidth margin="normal">
+            <TextField
+              label="Phone Number"
+              variant="standard"
+              value={formData.phoneNumber}
+              onChange={(e) => updateField('phoneNumber', e.target.value)}
+            />
+          </FormControl>
 
-              {/* Phone Number Field */}
-              <FormControl fullWidth margin="normal">
-                <TextField
-                  placeholder="Phone Number"
-                  variant="standard"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                />
-              </FormControl>
-              
+          {/* Email Field */}
+          <FormControl fullWidth margin="normal">
+            <TextField
+              label="Email"
+              variant="standard"
+              value={formData.email}
+              onChange={(e) => updateField('email', e.target.value)}
+            />
+          </FormControl>
 
-               {/* Email Field */}
-              <FormControl fullWidth margin="normal">
-                <TextField
-                  placeholder="Email"
-                  variant="standard"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </FormControl>
-              
+          {/* Select Tags Field */}
+          <FormControl fullWidth margin="normal">
+            <Select
+              multiple
+              value={selectedIds}
+              onChange={handleMultiSelectChange}
+              input={<Input />}
+              renderValue={renderValue}
+            >
+              {tagOptions.map((tag) => (
+                <MenuItem key={tag.id} value={tag.id}>
+                  <Checkbox checked={selectedIds.includes(tag.id)} />
+                  <ListItemText primary={tag.name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-              {/* Select Tags Input Field*/}
-              <FormControl fullWidth>
-                <Select
-                  multiple
-                  value={selectedIds}
-                  onChange={handleMultiSelectChange}
-                  input={<Input />}
-                  renderValue={(selected) => {
-                    const selectedNames = tagOptions
-                      .filter(tag => selected.includes(tag.id))
-                      .map(tag => tag.name);
-                    return selectedNames.join(', ');
-                  }}
-                >
-                  {tagOptions.map((tag) => (
-                    <MenuItem key={tag.id} value={tag.id}>
-                      <Checkbox checked={selectedIds.includes(tag.id)} />
-                      <ListItemText primary={tag.name} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-
-            </DialogContent>
+        </DialogContent>
         <DialogActions>
           <Button onClick={onClose} color="secondary">
-            Cancel
+            {cancelTitle}
           </Button>
           <Button onClick={onSubmit} variant="contained">
-            Save
+            {saveTitle}
           </Button>
         </DialogActions>
       </Box>
