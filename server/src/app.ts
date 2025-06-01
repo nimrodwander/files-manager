@@ -37,9 +37,6 @@ app.get("/contacts", async (req: Request, res: Response) => {
       skip: offset,
       take: limit,
       relations: ["tags"],
-      order: {
-        createdAt: "ASC",
-      },
     });
 
     res.json({
@@ -57,6 +54,7 @@ app.get("/contacts", async (req: Request, res: Response) => {
 app.put('/contacts/:id', async (req: Request, res: Response): Promise<any> => {
   const id = req.params.id;
   const { fullName, phoneNumber, email, tags } = req.body;
+  console.log(req.body);
   const contactRepo = AppDataSource.getRepository(Contact);
 
   try {
@@ -81,7 +79,7 @@ app.put('/contacts/:id', async (req: Request, res: Response): Promise<any> => {
 
     await contactRepo.save(contact);
 
-    return res.json(contact);
+    return res.json({data: contact});
   } catch (error) {
     console.error('Error updating contact:', error);
     return res.status(500).json({ message: 'Internal server error' });
@@ -108,6 +106,25 @@ app.delete('/contacts/:id', async (req: Request, res: Response): Promise<any> =>
   }
 });
 
+app.post('/contacts', async (req: Request, res: Response) => {
+  try {
+    const {id, ...data} = req.body;
+     
+    const contactRepository = AppDataSource.getRepository(Contact);
+
+    // Create a new Contact instance
+    const contact = contactRepository.create(data);
+
+    // Save to DB
+    const savedContact = await contactRepository.save(contact);
+
+    res.status(201).json({ data: savedContact });
+  } catch (error) {
+    console.error('Failed to create contact:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.get('/tags', async (req: Request, res: Response) => {
   try {
     const tagRepo = AppDataSource.getRepository(Tag);
@@ -118,6 +135,8 @@ app.get('/tags', async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

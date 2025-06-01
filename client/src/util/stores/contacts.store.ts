@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { IContact } from "../entity/contact.entity";
 import { ApiService } from "../api/api.service";
 import { IPaginationStore, IStore } from "./abstract.store";
-import { IContactDeleteResponse, IContactGetResponse, IContactUpdateRequest } from "./contacts.types";
+import { IContactCreateReponse, IContactDeleteResponse, IContactGetResponse, IContactUpdateResponse } from "./contacts.types";
 import { Logger } from "../errors";
 
 export class ContactsStore implements IStore, IPaginationStore{
@@ -22,7 +22,14 @@ export class ContactsStore implements IStore, IPaginationStore{
   }
 
   public async createOne(payload: IContact): Promise<void>{
+    this._isLoading = true;
+    const response = await this._api.post<IContact, IContactCreateReponse>('/contacts', payload);
+    const contact = response.data;
 
+    runInAction((): void => {
+      this._contacts = this._contacts.set(contact.id, contact);
+      this._isLoading = false;
+    });
   }
 
   
@@ -37,8 +44,9 @@ export class ContactsStore implements IStore, IPaginationStore{
   }
 
   public async updateOne(id: string, payload: IContact): Promise<void>{
+    console.log("THIS IS AN ID" , id);
     this._isLoading = true;
-    const result: IContactUpdateRequest = await this._api.post<IContact, IContactUpdateRequest>(`/contacts/${id}`, payload);
+    const result: IContactUpdateResponse = await this._api.put<IContact, IContactUpdateResponse>(`/contacts/${id}`, payload);
     const contact: IContact = result.data; 
     
     runInAction((): void => {

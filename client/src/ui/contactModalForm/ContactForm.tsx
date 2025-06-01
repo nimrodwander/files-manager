@@ -35,21 +35,24 @@ export const ContactForm: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
 
   const onSubmit = () => {
+    console.log(id);
     const contact: IContact = {
-      id: '',
+      id: id || '',
       fullName: fullName,
       email: email,
       phoneNumber: phoneNumber,
       tags: tags
     }
-    
+
+    console.log(contact);
+
     if(id){
       contactsStore.updateOne(id, contact);
     }
     else{
       contactsStore.createOne(contact);
     }
-    navigate(-1);
+    //navigate(-1);
   }
 
   const onClose = () => {
@@ -67,7 +70,7 @@ export const ContactForm: React.FC = () => {
   return (
     <Dialog open={true} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Edit Contact</DialogTitle>
-      <Box component="form" onSubmit={onSubmit}>
+      <Box>
         <DialogContent dividers>
 
               {/* Full Name Field */}
@@ -132,7 +135,7 @@ export const ContactForm: React.FC = () => {
           <Button onClick={onClose} color="secondary">
             Cancel
           </Button>
-          <Button type="submit" variant="contained">
+          <Button onClick={onSubmit} variant="contained">
             Save
           </Button>
         </DialogActions>
