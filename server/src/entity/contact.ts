@@ -15,10 +15,6 @@ export class Contact {
   @Column()
   phoneNumber!: string;
 
-  // @CreateDateColumn()
-  // @Index()
-  // createdAt!: Date;
-
   @ManyToMany(() => Tag, (tag) => tag.contacts, { eager: true })
   @JoinTable()
   tags!: Tag[];

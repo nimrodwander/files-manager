@@ -15,14 +15,12 @@ import {
   ListItemText,
   FormControl,
 } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import { IContact } from '../../util/entity/contact.entity';
-import { ITag } from '../../util/entity/tag.entity';
+import { IContact } from '../util/entity/contact.entity';
+import { ITag } from '../util/entity/tag.entity';
 import { useNavigate, useParams } from 'react-router-dom';
-import { contactsStore } from '../../util/stores/contacts.store';
+import { contactsStore } from '../util/stores/contacts.store';
 import { SelectChangeEvent, SelectInputProps } from '@mui/material/Select/SelectInput';
-import { IContactForm } from './contactForm.types';
-import { tagsStore } from '../../util/stores/tags.store';
+import { tagsStore } from '../util/stores/tags.store';
 
 export const ContactForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -52,7 +50,7 @@ export const ContactForm: React.FC = () => {
     else{
       contactsStore.createOne(contact);
     }
-    //navigate(-1);
+    navigate(-1);
   }
 
   const onClose = () => {

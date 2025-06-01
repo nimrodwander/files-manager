@@ -10,12 +10,3 @@ export const ContactsList: React.FC = observer(() => {
       {contactsStore.contacts.map((contact: IContact) => (<ContactItem key={contact.id} contact={contact}/>))}
     </>
 })
-
-
-/*
-export const ContactsList: React.FC = observer(() => {
-    return <> 
-      {contactsStore.contacts.map((contact: IContact) => (<ContactItem/>))}
-    </>
-})*/
-

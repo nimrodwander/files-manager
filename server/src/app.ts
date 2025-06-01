@@ -3,6 +3,7 @@ import { AppDataSource } from "./data-source";
 import { Contact } from './entity/contact';
 import cors from "cors";
 import { Tag } from './entity/tag';
+import { port } from './util/config';
 
 AppDataSource.initialize()
   .then(() => {
@@ -13,7 +14,6 @@ AppDataSource.initialize()
   });
 
 const app = express();
-const port = 5000;
 
 app.use(cors());
 
@@ -112,10 +112,8 @@ app.post('/contacts', async (req: Request, res: Response) => {
      
     const contactRepository = AppDataSource.getRepository(Contact);
 
-    // Create a new Contact instance
     const contact = contactRepository.create(data);
 
-    // Save to DB
     const savedContact = await contactRepository.save(contact);
 
     res.status(201).json({ data: savedContact });
