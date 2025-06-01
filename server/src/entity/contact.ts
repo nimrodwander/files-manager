@@ -18,4 +18,8 @@ export class Contact {
   @ManyToMany(() => Tag, (tag) => tag.contacts, { eager: true })
   @JoinTable()
   tags!: Tag[];
+
+  @CreateDateColumn()
+  @Index()
+  createdAt!: Date;
 }

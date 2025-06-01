@@ -13,10 +13,10 @@ export class TagsStore implements IStore{
   }
 
   public async init(){
-    await this.loadNext();
+    await this.getMany();
   }
 
-  public async loadNext(){
+  public async getMany(){
     const response: ITagGetResponse = await this._api.get<ITagGetResponse>('/tags');
     const tags = response.data;
 

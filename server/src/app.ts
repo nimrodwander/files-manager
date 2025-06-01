@@ -34,6 +34,7 @@ app.get("/contacts", async (req: Request, res: Response) => {
     const contactRepo = AppDataSource.getRepository(Contact);
 
     const [contacts, total] = await contactRepo.findAndCount({
+       order: { createdAt: 'DESC' },
       skip: offset,
       take: limit,
       relations: ["tags"],
@@ -108,7 +109,7 @@ app.delete('/contacts/:id', async (req: Request, res: Response): Promise<any> =>
 
 app.post('/contacts', async (req: Request, res: Response) => {
   try {
-    const {id, ...data} = req.body;
+    const {id, createdAt, ...data} = req.body;
      
     const contactRepository = AppDataSource.getRepository(Contact);
 
@@ -133,8 +134,6 @@ app.get('/tags', async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

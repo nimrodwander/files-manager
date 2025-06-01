@@ -34,6 +34,7 @@ export const ContactForm: React.FC = () => {
       const contact: IContact = contactsStore.getOne(id);
       return {
         id: contact.id,
+        createdAt: contact.createdAt,
         fullName: contact.fullName,
         email: contact.email,
         phoneNumber: contact.phoneNumber,
@@ -42,6 +43,7 @@ export const ContactForm: React.FC = () => {
     } else {
       return {
         id: '',
+        createdAt: '',
         fullName: '',
         email: '',
         phoneNumber: '',
@@ -51,6 +53,7 @@ export const ContactForm: React.FC = () => {
   };
 
   const [formData, setFormData] = useState<IContact>(initDefaultValues());
+  const selectedIds = formData.tags.map((tag) => tag.id);
 
   const updateField = <K extends keyof IContact>(key: K, value: IContact[K]) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -62,7 +65,6 @@ export const ContactForm: React.FC = () => {
     updateField('tags', selectedTags);
   };
 
-  const selectedIds = formData.tags.map((tag) => tag.id);
 
   const onSubmit = () => {
     const contact: IContact = {
