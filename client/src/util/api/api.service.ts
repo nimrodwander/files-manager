@@ -3,7 +3,7 @@ import { API_URL } from "../config";
 import { CatchHttpError, get, post, put, remove } from "./api.functions";
 
 export class ApiService {
-  //specify the base url of the api
+  //Specify the base url of the api
   private readonly _apiUrl: string = API_URL;
   
   @CatchHttpError(get)

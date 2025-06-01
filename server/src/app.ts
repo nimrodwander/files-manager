@@ -11,38 +11,40 @@ import cors from "cors";
 
 export class App {
   public app: Application;
+  private _contactsRouter = new ContactsRouter();
+  private _tagsRouter = new TagsRouter();
 
   constructor() {
     this.app = express();
-    this.initializeMiddlewares();
-    this.initializeRoutes();
-    this.initializeErrorHandling();
+    this._initMiddlewares();
+    this._initRoutes();
+    this._initErrorHandling();
   }
 
   public async start(port: number) {
     try {
-      await AppDataSource.initialize();
-      console.log('Database connected');
+      await AppDataSource.initialize()
+      console.log('Database connected')
       this.app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
       });
     } 
     catch (error) {
-      console.error('Error during Data Source initialization', error);
+      console.error('Error during Data Source initialization', error)
     }
   }
 
-  private initializeMiddlewares() {
+  private _initMiddlewares() {
     this.app.use(cors());
-    this.app.use(express.json());
+    this.app.use(express.json())
   }
 
-  private initializeRoutes() {
-    this.app.use('/contacts', new ContactsRouter().router);
-    this.app.use('/tags', new TagsRouter().router);
+  private _initRoutes() {
+    this.app.use('/api/contacts', this._contactsRouter.router);
+    this.app.use('/api/tags', this._tagsRouter.router);
   }
 
-  private initializeErrorHandling() {
-    this.app.use(errorHandler);
+  private _initErrorHandling() {
+    this.app.use(errorHandler)
   }
 }

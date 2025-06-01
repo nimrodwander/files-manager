@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { Tag } from './entity/tag';
 import { Contact } from './entity/contact';
 
-const TAGS = ['Work', 'Friends', 'Family', 'Gym', 'School'];
+const TAGS = ['Lead', 'Customer', 'Partner', 'VIP'];
 
 async function seed() {
   await AppDataSource.initialize();
