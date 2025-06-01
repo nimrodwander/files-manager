@@ -111,6 +111,10 @@ export class ContactsStore implements IStore, IPaginationStore{
   public get contacts(): IContact[]{
     return Array.from(this._contacts.values());
   }
+
+  public get contactsIds(): string[]{
+    return Array.from(this._contacts.keys());
+  }
 }
 
 export const contactsStore = new ContactsStore();

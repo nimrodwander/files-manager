@@ -8,30 +8,34 @@ import { useNavigate } from 'react-router-dom';
 import { contactsStore } from '../util/stores/contacts.store';
 import { Box, Chip } from '@mui/material';
 import { ITag } from '../util/entity/tag.entity';
-export const ContactItem: React.FC<{contact: IContact}> = (props) => {
+import { observer } from 'mobx-react-lite';
+
+
+export const ContactItem: React.FC<{id: string}> = observer((props) => {
   const navigate = useNavigate();
+  const contact: IContact = contactsStore.getOne(props.id);
 
   const handleEditIconOnClick = () => {
-    navigate(`/contacts/contact-form/${props.contact.id}`);
+    navigate(`/contacts/contact-form/${props.id}`);
   };
 
   const handleDeleteIconOnClick = () => {
-    contactsStore.deleteOne(props.contact.id);
+    contactsStore.deleteOne(props.id);
   }
 
   const mapContacts = () => {
-    return props.contact.tags.map((tag: ITag) => {
+    return contact.tags.map((tag: ITag) => {
       return <Chip label={tag.name} size='small' sx={{marginX: "5px", padding: "8px", fontSize: "10px"}}/>
     })
   }
   
   return <TableRow
-            key={props.contact.id}
+            key={contact.id}
             sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover .icons-container': { opacity: 1 } }}
           >
-            <TableCell>{props.contact.fullName}</TableCell>
-            <TableCell>{props.contact.phoneNumber}</TableCell>
-            <TableCell>{props.contact.email}</TableCell>
+            <TableCell>{contact.fullName}</TableCell>
+            <TableCell>{contact.phoneNumber}</TableCell>
+            <TableCell>{contact.email}</TableCell>
             <TableCell>
               {mapContacts()}
             </TableCell>
@@ -42,4 +46,4 @@ export const ContactItem: React.FC<{contact: IContact}> = (props) => {
                 </Box>
             </TableCell>
       </TableRow>
-}
+});

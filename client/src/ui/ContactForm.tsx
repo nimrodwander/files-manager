@@ -81,17 +81,6 @@ export const ContactForm: React.FC = () => {
                 />
               </FormControl>
 
-              
-              {/* Email Field */}
-              <FormControl fullWidth margin="normal">
-                <TextField
-                  placeholder="Email"
-                  variant="standard"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </FormControl>
-
 
               {/* Phone Number Field */}
               <FormControl fullWidth margin="normal">
@@ -100,6 +89,17 @@ export const ContactForm: React.FC = () => {
                   variant="standard"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </FormControl>
+              
+
+               {/* Email Field */}
+              <FormControl fullWidth margin="normal">
+                <TextField
+                  placeholder="Email"
+                  variant="standard"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </FormControl>
               
