@@ -1,140 +1,48 @@
-import express, { Request, Response, Router } from 'express';
-import { AppDataSource } from "./data-source";
+import 'reflect-metadata';
+import express, { Application } from 'express';
+import { DataSource } from 'typeorm';
 import { Contact } from './entity/contact';
-import cors from "cors";
 import { Tag } from './entity/tag';
-import { port } from './util/config';
+import { ContactsRouter } from './routers/contacts.router';
+import { TagsRouter } from './routers/tags.router';
+import { errorHandler } from './middlewares/errorHandler.middleware';
+import { AppDataSource } from './config/data-source.config';
+import cors from "cors";
 
-AppDataSource.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
-  })
-  .catch((err) => {
-    console.error("Error during Data Source initialization", err);
-  });
+export class App {
+  public app: Application;
 
-const app = express();
-
-app.use(cors());
-
-app.use(express.json());
-
-
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, world!');
-});
-
-app.get("/contacts", async (req: Request, res: Response) => {
-  try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
-    const offset = (page - 1) * limit;
-
-    const contactRepo = AppDataSource.getRepository(Contact);
-
-    const [contacts, total] = await contactRepo.findAndCount({
-       order: { createdAt: 'DESC' },
-      skip: offset,
-      take: limit,
-      relations: ["tags"],
-    });
-
-    res.json({
-      data: contacts,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit),
-    });
-  } catch (err) {
-    console.error("Error fetching contacts:", err);
-    res.status(500).json({ error: "Internal server error" });
+  constructor() {
+    this.app = express();
+    this.initializeMiddlewares();
+    this.initializeRoutes();
+    this.initializeErrorHandling();
   }
-});
 
-app.put('/contacts/:id', async (req: Request, res: Response): Promise<any> => {
-  const id = req.params.id;
-  const { fullName, phoneNumber, email, tags } = req.body;
-  console.log(req.body);
-  const contactRepo = AppDataSource.getRepository(Contact);
-
-  try {
-    const contact = await contactRepo.findOne({
-      where: { id },
-      relations: ['tags'],
-    });
-
-    if (!contact) {
-      return res.status(404).json({ message: 'Contact not found' });
+  public async start(port: number) {
+    try {
+      await AppDataSource.initialize();
+      console.log('Database connected');
+      this.app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+      });
+    } 
+    catch (error) {
+      console.error('Error during Data Source initialization', error);
     }
-
-    contact.fullName = fullName;
-    contact.phoneNumber = phoneNumber;
-    contact.email = email;
-
-    const tagRepo = AppDataSource.getRepository(Tag);
-    // Handle tags (assume tags is an array of tag IDs)
-    if (Array.isArray(tags)) {
-      contact.tags = await tagRepo.findByIds(tags.map((t: any) => t.id || t));
-    }
-
-    await contactRepo.save(contact);
-
-    return res.json({data: contact});
-  } catch (error) {
-    console.error('Error updating contact:', error);
-    return res.status(500).json({ message: 'Internal server error' });
   }
-});
 
-app.delete('/contacts/:id', async (req: Request, res: Response): Promise<any> => {
-  const id = req.params.id;
-  const contactRepo = AppDataSource.getRepository(Contact);
-
-  try {
-    const contact = await contactRepo.findOne({ where: { id } });
-
-    if (!contact) {
-      return res.status(404).json({ message: 'Contact not found' });
-    }
-
-    await contactRepo.remove(contact);
-
-    return res.status(200).json({ data: {id: id} });
-  } catch (error) {
-    console.error('Error deleting contact:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+  private initializeMiddlewares() {
+    this.app.use(cors());
+    this.app.use(express.json());
   }
-});
 
-app.post('/contacts', async (req: Request, res: Response) => {
-  try {
-    const {id, createdAt, ...data} = req.body;
-     
-    const contactRepository = AppDataSource.getRepository(Contact);
-
-    const contact = contactRepository.create(data);
-
-    const savedContact = await contactRepository.save(contact);
-
-    res.status(201).json({ data: savedContact });
-  } catch (error) {
-    console.error('Failed to create contact:', error);
-    res.status(500).json({ error: 'Internal server error' });
+  private initializeRoutes() {
+    this.app.use('/contacts', new ContactsRouter().router);
+    this.app.use('/tags', new TagsRouter().router);
   }
-});
 
-app.get('/tags', async (req: Request, res: Response) => {
-  try {
-    const tagRepo = AppDataSource.getRepository(Tag);
-    const tags = await tagRepo.find(); // fetch all tags
-    res.json({data: tags});
-  } catch (error) {
-    console.error('Error fetching tags:', error);
-    res.status(500).json({ message: 'Internal server error' });
+  private initializeErrorHandling() {
+    this.app.use(errorHandler);
   }
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+}
