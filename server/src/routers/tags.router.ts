@@ -12,10 +12,14 @@ export class TagsRouter {
     this._initRoutes()
   }
 
+  //Init all the routes with async handler middleware
   private _initRoutes(): void {
     this.router.get('/', asyncHandler(this._getAllTags));
   }
 
+  /**
+   * Gets all the tags
+   */
   private async _getAllTags(req: Request, res: Response): Promise<void> {
     
     const tagRepo: Repository<Tag> = AppDataSource.getRepository(Tag)

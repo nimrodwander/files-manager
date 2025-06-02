@@ -4,6 +4,11 @@ import { Tag } from './entity/tag.entity';
 import { Contact } from './entity/contact.entity';
 import { Repository } from 'typeorm';
 
+/**
+ * Seeding the db with 150 contact elements
+ * and 4 predefined tags
+ */
+
 const TAGS = ['Lead', 'Customer', 'Partner', 'VIP'];
 
 async function seed(): Promise<void> {

@@ -22,12 +22,16 @@ import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import { tagsStore } from '../util/stores/tags.store';
 
 export const ContactForm: React.FC = () => {
+  
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  
+  //Gets the list of tags from store
   const tagOptions: ITag[] = tagsStore.tags;
+
   const cancelTitle: string = 'Cancel';
   const saveTitle: string = 'Save';
-
+ 
   const initDefaultValues = (): IContact => {
     if (id) {
       const contact: IContact = contactsStore.getOne(id);
@@ -39,7 +43,8 @@ export const ContactForm: React.FC = () => {
         phoneNumber: contact.phoneNumber,
         tags: contact.tags,
       };
-    } else {
+    } 
+    else {
       return {
         id: '',
         createdAt: '',
@@ -54,11 +59,14 @@ export const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState<IContact>(initDefaultValues());
   const selectedIds = formData.tags.map((tag) => tag.id);
 
-  const updateField = <K extends keyof IContact>(key: K, value: IContact[K]) => {
+
+  //Generic method for updating a text field
+  const updateField = <K extends keyof IContact>(key: K, value: IContact[K]): void => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleMultiSelectChange = (event: SelectChangeEvent<string[]>) => {
+  //A method for updating the tags property (multi select)
+  const handleMultiSelectChange = (event: SelectChangeEvent<string[]>): void => {
     const selectedIds = event.target.value as string[];
     const selectedTags = tagOptions.filter((tag) => selectedIds.includes(tag.id));
     updateField('tags', selectedTags);
@@ -84,10 +92,11 @@ export const ContactForm: React.FC = () => {
     navigate(-1);
   };
 
+  //If an id exists we are in edit mode if it does not we are creating a new contact "create new mode"
   const formTitle = id ? 'Edit Contact' : 'Add New Contact';
 
+  //The value to be displayed as a value in the tags form field
   const renderValue = (selected: string[]): React.ReactNode => {
-
     const selectedNames = tagOptions
       .filter((tag) => selected.includes(tag.id))
       .map((tag) => tag.name);

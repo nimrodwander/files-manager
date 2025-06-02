@@ -19,6 +19,7 @@ export class Contact {
   @JoinTable()
   tags!: Tag[];
 
+  //We will use it as sorting property later so we index it in order to make the sorting faster
   @CreateDateColumn()
   @Index()
   createdAt!: Date;

@@ -28,6 +28,11 @@ export function CatchHttpError(handler?: (error: any) => void) {
   };
 }
 
+/**
+ * Error handling for CRUD ops
+ * Pass those functions into the CatchError decorator
+ */
+
 export const get = (): void => {
     throw Logger.error("Could not get data");
 }

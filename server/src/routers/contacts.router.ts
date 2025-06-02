@@ -13,19 +13,30 @@ export class ContactsRouter {
     this._initRoutes();
   }
 
+  //Init all the routes with async handler middleware
   private _initRoutes(): void {
     this.router.get('/', asyncHandler(this._getContacts));
     this.router.post('/', asyncHandler(this._createContact));
     this.router.put('/:id', asyncHandler(this._updateContact));
+    
     this.router.delete('/:id', asyncHandler(this._deleteContact));
   }
 
   private async _getContacts(req: Request, res: Response): Promise<void> {
+    
+    //Number of items to skip
     const skip: number = parseInt(req.query.skip as string) || 0;
+    
+    //The size of the chunk 
     const limit: number = parseInt(req.query.limit as string) || 20
     
     const contactRepo: Repository<Contact> = AppDataSource.getRepository(Contact);
 
+    /**
+     * The whole list is sorted by the DB index createdAt
+     * The idea is to keep the frontend in sync with the backend at every givven moment
+     * such that the frontend will represent partial list of the backend in a sorted way by the createdAt property
+     */
     const [contacts, total] = await contactRepo.findAndCount({
       order: { createdAt: 'DESC' },
       skip: skip,
@@ -36,6 +47,9 @@ export class ContactsRouter {
     res.json({data: contacts});
   }
 
+  /**
+   * Creating a new contact
+   */
   private async _createContact(req: Request, res: Response): Promise<void> {
     const { id, createdAt, tags = [], ...rest } = req.body;
 
@@ -55,12 +69,15 @@ export class ContactsRouter {
     res.status(201).json({ data: saved });
   }
 
+  /**
+   * Updating an existing contact
+   */
   private async _updateContact(req: Request, res: Response): Promise<void> {
     
     const id: string = req.params.id;
     
-    const contactRepo = AppDataSource.getRepository(Contact);
-    const contact = await contactRepo.findOne({ where: { id }, relations: ['tags'] });
+    const contactRepo: Repository<Contact> = AppDataSource.getRepository(Contact);
+    const contact: Contact | null = await contactRepo.findOne({ where: { id }, relations: ['tags'] });
 
 
     if (!contact) {
@@ -73,6 +90,9 @@ export class ContactsRouter {
     res.json({ data: contact });
   }
 
+  /**
+   * Deleting a contact
+   */
   private async _deleteContact(req: Request, res: Response): Promise<void> {
     const id: string = req.params.id;
     

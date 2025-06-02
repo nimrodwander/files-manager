@@ -4,6 +4,11 @@ import { ApiService } from "../api/api.service";
 import { ITagGetResponse } from "./tags.types";
 import { IStore } from "./abstract.store";
 
+
+/**
+ * Tag store holds all the tags in db
+ * once init it gets the full list
+ */
 export class TagsStore implements IStore{
     private readonly _api: ApiService = new ApiService();
     private _tags: ITag[] = [];
