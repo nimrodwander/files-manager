@@ -38,8 +38,6 @@ export class ContactsRouter {
   private async _createContact(req: Request, res: Response) {
     const { id, createdAt, tags = [], ...rest } = req.body;
 
-    console.log(req.body);
-
     const tagRepo = AppDataSource.getRepository(Tag)
     const contactRepo = AppDataSource.getRepository(Contact);
 

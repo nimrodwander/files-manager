@@ -126,14 +126,17 @@ export class ContactsStore implements IStore, IPaginationStore{
     return this._isLoading;
   }
 
+  //For a user it matters to view the new contacts he added but since there are much more it should not care about all the others
+  //Placing the new contacts at the top of the list in sorted order
+  //and the other contacts in previous sessions under
   public get contactsIds(): string[]{
-    return Array.from(this._contacts.keys());
-  }
-
-  public get newContactsIds(): string[]{
-    return Array.from(this._newContacts.values())
-    .sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+    const newContacts = Array.from(this._newContacts.values())
+    .sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .map((item) => item.id);
+
+    const oldContacts = Array.from(this._contacts.keys());
+
+    return newContacts.concat(oldContacts);
   }
 }
 

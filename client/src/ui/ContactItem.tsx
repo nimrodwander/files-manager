@@ -25,7 +25,7 @@ export const ContactItem: React.FC<{id: string}> = observer((props) => {
 
   const mapContacts = () => {
     return contact.tags.map((tag: ITag) => {
-      return <Chip label={tag.name} size='small' sx={{marginX: "5px", padding: "8px", fontSize: "10px"}}/>
+      return <Chip key={tag.id} label={tag.name} size='small' sx={{marginX: "5px", padding: "8px", fontSize: "10px"}}/>
     })
   }
   
