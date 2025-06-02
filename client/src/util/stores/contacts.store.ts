@@ -10,7 +10,6 @@ export class ContactsStore implements IStore, IPaginationStore{
   private readonly _limit: number = 20;
   private _contacts: Map<string, IContact> = new Map<string, IContact>();
   private _newContacts: Map<string, IContact> = new Map<string, IContact>();
-  private _hasMorePages: boolean = true;
   private _isLoading: boolean = false;
   private _buffer: Map<string, IContact> = new Map<string, IContact>();
 
@@ -78,7 +77,7 @@ export class ContactsStore implements IStore, IPaginationStore{
   public async loadNext(): Promise<void> {
 
     //Allows to load only one chuck of contacts at once
-    if (this._isLoading || !this._hasMorePages){
+    if (this._isLoading){
       return;
     }
     
@@ -93,7 +92,6 @@ export class ContactsStore implements IStore, IPaginationStore{
       this._buffer.clear();
       contacts.forEach((contact: IContact) => this._buffer.set(contact.id, contact));
 
-      this._hasMorePages = contacts.length === this._limit;
       this._isLoading = false;
     });
   }
@@ -116,10 +114,6 @@ export class ContactsStore implements IStore, IPaginationStore{
         }
       });
     });
-  }
-
-  public get hasMorePages(): boolean {
-    return this._hasMorePages;
   }
 
   public get isloading(): boolean{
