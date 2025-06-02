@@ -11,9 +11,6 @@ export interface IContactUpdateResponse{
 
 export interface IContactGetResponse{
   data: IContact[],
-  total: number,
-  page: number,
-  totalPages: number
 }
 
 export interface IContactDeleteResponse{

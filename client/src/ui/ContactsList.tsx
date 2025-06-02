@@ -6,7 +6,8 @@ import React from "react"
 
 
 export const ContactsList: React.FC = observer(() => {
-    return <> 
+    return <>
+      {contactsStore.newContactsIds.map((id: string) => (<ContactItem key={id} id={id}/>))} 
       {contactsStore.contactsIds.map((id: string) => (<ContactItem key={id} id={id}/>))}
     </>
 });

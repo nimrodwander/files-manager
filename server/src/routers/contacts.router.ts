@@ -13,33 +13,26 @@ export class ContactsRouter {
   }
 
   private _initRoutes() {
-    this.router.get('/', asyncHandler(this._getAllContacts));
+    this.router.get('/', asyncHandler(this._getContacts));
     this.router.post('/', asyncHandler(this._createContact));
     this.router.put('/:id', asyncHandler(this._updateContact));
     this.router.delete('/:id', asyncHandler(this._deleteContact));
   }
 
-  private async _getAllContacts(req: Request, res: Response) {
-    const page = parseInt(req.query.page as string) || 1;
+  private async _getContacts(req: Request, res: Response) {
+    const skip = parseInt(req.query.skip as string) || 0;
     const limit = parseInt(req.query.limit as string) || 20
     
-    const offset = (page - 1) * limit;
-
     const contactRepo = AppDataSource.getRepository(Contact);
 
     const [contacts, total] = await contactRepo.findAndCount({
       order: { createdAt: 'DESC' },
-      skip: offset,
+      skip: skip,
       take: limit,
       relations: ['tags'],
     });
 
-    res.json({
-      data: contacts,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit),
-    });
+    res.json({data: contacts});
   }
 
   private async _createContact(req: Request, res: Response) {
