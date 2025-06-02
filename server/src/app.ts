@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import express, { Application } from 'express';
 import { DataSource } from 'typeorm';
-import { Contact } from './entity/contact';
-import { Tag } from './entity/tag';
+import { Contact } from './entity/contact.entity';
+import { Tag } from './entity/tag.entity';
 import { ContactsRouter } from './routers/contacts.router';
 import { TagsRouter } from './routers/tags.router';
 import { errorHandler } from './middlewares/errorHandler.middleware';

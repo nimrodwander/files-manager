@@ -1,7 +1,7 @@
 import { AppDataSource } from "../config/data-source.config";
 import { Request, Response, Router } from "express";
-import { Contact } from "../entity/contact";
-import { Tag } from "../entity/tag";
+import { Contact } from "../entity/contact.entity";
+import { Tag } from "../entity/tag.entity";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 
 export class ContactsRouter {
@@ -70,7 +70,7 @@ export class ContactsRouter {
     const contactRepo = AppDataSource.getRepository(Contact);
     const contact = await contactRepo.findOne({ where: { id }, relations: ['tags'] });
 
-    
+
     if (!contact) {
       res.status(404).json({ error: 'Contact not found' });
       return;

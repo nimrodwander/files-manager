@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { AppDataSource } from '../config/data-source.config';
-import { Tag } from '../entity/tag';
+import { Tag } from '../entity/tag.entity';
 import { asyncHandler } from '../middlewares/asyncHandler.middleware';
 
 export class TagsRouter {

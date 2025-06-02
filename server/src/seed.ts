@@ -1,7 +1,7 @@
 import { AppDataSource } from './config/data-source.config';
 import { faker } from '@faker-js/faker';
-import { Tag } from './entity/tag';
-import { Contact } from './entity/contact';
+import { Tag } from './entity/tag.entity';
+import { Contact } from './entity/contact.entity';
 
 const TAGS = ['Lead', 'Customer', 'Partner', 'VIP'];
 
