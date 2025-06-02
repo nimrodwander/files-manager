@@ -4,26 +4,27 @@ import TableRow from '@mui/material/TableRow';
 import { IContact } from '../util/entity/contact.entity';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { contactsStore } from '../util/stores/contacts.store';
 import { Box, Chip } from '@mui/material';
 import { ITag } from '../util/entity/tag.entity';
 import { observer } from 'mobx-react-lite';
+import { JSX } from 'react/jsx-runtime';
 
 
 export const ContactItem: React.FC<{id: string}> = observer((props) => {
-  const navigate = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
   const contact: IContact = contactsStore.getOne(props.id);
 
-  const handleEditIconOnClick = () => {
+  const handleEditIconOnClick = (): void => {
     navigate(`/contacts/contact-form/${props.id}`);
   };
 
-  const handleDeleteIconOnClick = () => {
+  const handleDeleteIconOnClick = (): void => {
     contactsStore.deleteOne(props.id);
   }
 
-  const mapContacts = () => {
+  const mapContacts = (): JSX.Element[] => {
     return contact.tags.map((tag: ITag) => {
       return <Chip key={tag.id} label={tag.name} size='small' sx={{marginX: "5px", padding: "8px", fontSize: "10px"}}/>
     })

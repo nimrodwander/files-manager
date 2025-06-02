@@ -13,7 +13,6 @@ import {
   Checkbox,
   ListItemText,
   FormControl,
-  InputLabel,
 } from '@mui/material';
 import { IContact } from '../util/entity/contact.entity';
 import { ITag } from '../util/entity/tag.entity';

@@ -5,7 +5,7 @@ export function errorHandler(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): void {
   console.error('Unhandled error:', err);
   res.status(500).json({ error: 'Internal server error' });
 }

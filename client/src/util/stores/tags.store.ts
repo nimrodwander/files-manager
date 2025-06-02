@@ -1,4 +1,4 @@
-import { makeAutoObservable, makeObservable, runInAction } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { ITag } from "../entity/tag.entity";
 import { ApiService } from "../api/api.service";
 import { ITagGetResponse } from "./tags.types";
@@ -12,20 +12,20 @@ export class TagsStore implements IStore{
     makeAutoObservable(this);
   }
 
-  public async init(){
+  public async init(): Promise<void>{
     await this.getMany();
   }
 
-  public async getMany(){
+  public async getMany(): Promise<void>{
     const response: ITagGetResponse = await this._api.get<ITagGetResponse>('/tags');
-    const tags = response.data;
+    const tags: ITag[] = response.data;
 
-    runInAction(() => {
+    runInAction((): void => {
         this._tags = tags;
     })
   }
 
-  public get tags(){
+  public get tags(): ITag[]{
     return this._tags;
   }
 }

@@ -1,5 +1,5 @@
 import { App } from './app';
 import { PORT } from './config/env.config';
 
-const server = new App();
-server.start(5000)
+const server: App = new App();
+server.start(PORT)

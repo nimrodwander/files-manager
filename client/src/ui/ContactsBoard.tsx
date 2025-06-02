@@ -11,16 +11,16 @@ import { JSX } from 'react';
 import { contactsStore } from '../util/stores/contacts.store';
 import { useScroll } from '../hooks/useScroll';
 import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 export const ContactsBoard: React.FC = () => {
   
   const tableNames: string[] = ["Full Name", "Phone Number", "Email", "Tags"];
-  const containerRef = useScroll(contactsStore);
-  const navigate = useNavigate();
+  const containerRef: React.RefObject<HTMLDivElement | null> = useScroll(contactsStore);
+  const navigate: NavigateFunction = useNavigate();
 
   const renderHeaderCells = (): JSX.Element[] =>{
-    return tableNames.map((name) => (
+    return tableNames.map((name: string):  React.JSX.Element => (
     <TableCell
       key={name}
       sx={{backgroundColor: "#2C2C2C"}}
@@ -30,7 +30,7 @@ export const ContactsBoard: React.FC = () => {
     ))
   }
 
-  const handleAddNewOnClick = () => {
+  const handleAddNewOnClick = (): void => {
     navigate('/contacts/contact-form');
   }
 

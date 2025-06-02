@@ -21,7 +21,7 @@ export class App {
     this._initErrorHandling();
   }
 
-  public async start(port: number) {
+  public async start(port: number): Promise<void> {
     try {
       await AppDataSource.initialize()
       console.log('Database connected')
@@ -34,17 +34,17 @@ export class App {
     }
   }
 
-  private _initMiddlewares() {
+  private _initMiddlewares(): void {
     this.app.use(cors());
     this.app.use(express.json())
   }
 
-  private _initRoutes() {
+  private _initRoutes(): void {
     this.app.use('/api/contacts', this._contactsRouter.router);
     this.app.use('/api/tags', this._tagsRouter.router);
   }
 
-  private _initErrorHandling() {
+  private _initErrorHandling(): void {
     this.app.use(errorHandler)
   }
 }

@@ -7,7 +7,6 @@ import { Logger } from "../errors";
 
 export class ContactsStore implements IStore, IPaginationStore{
   private readonly _api: ApiService = new ApiService();
-  private readonly _limit: number = 20;
   private _contacts: Map<string, IContact> = new Map<string, IContact>();
   private _newContacts: Map<string, IContact> = new Map<string, IContact>();
   private _isLoading: boolean = false;
@@ -70,11 +69,11 @@ export class ContactsStore implements IStore, IPaginationStore{
     });
   }
 
-  public get sizeWithBuffer(){
+  public get sizeWithBuffer(): number{
     return this._contacts.size + this._newContacts.size + this._buffer.size;
   }
 
-  public async loadNext(): Promise<void> {
+  public async loadNext(limit: number = 20): Promise<void> {
 
     //Allows to load only one chuck of contacts at once
     if (this._isLoading){
@@ -82,7 +81,7 @@ export class ContactsStore implements IStore, IPaginationStore{
     }
     
     this._isLoading = true;
-    const result: IContactGetResponse = await this._api.get<IContactGetResponse>(`/contacts/?skip=${this.sizeWithBuffer}&limit=${this._limit}`);
+    const result: IContactGetResponse = await this._api.get<IContactGetResponse>(`/contacts/?skip=${this.sizeWithBuffer}&limit=${limit}`);
     const contacts: IContact[] = result.data;
     
     runInAction((): void => {
@@ -96,8 +95,8 @@ export class ContactsStore implements IStore, IPaginationStore{
     });
   }
 
-  public async init(): Promise<void>{
-    const result: IContactGetResponse = await this._api.get<IContactGetResponse>(`/contacts?limit=${40}`);
+  public async init(limit: number = 40): Promise<void>{
+    const result: IContactGetResponse = await this._api.get<IContactGetResponse>(`/contacts?limit=${limit}`);
     const contacts: IContact[] = result.data;
     
     runInAction((): void => {
@@ -134,4 +133,4 @@ export class ContactsStore implements IStore, IPaginationStore{
   }
 }
 
-export const contactsStore = new ContactsStore();
+export const contactsStore: ContactsStore = new ContactsStore();

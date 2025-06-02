@@ -2,14 +2,15 @@ import { AppDataSource } from './config/data-source.config';
 import { faker } from '@faker-js/faker';
 import { Tag } from './entity/tag.entity';
 import { Contact } from './entity/contact.entity';
+import { Repository } from 'typeorm';
 
 const TAGS = ['Lead', 'Customer', 'Partner', 'VIP'];
 
-async function seed() {
+async function seed(): Promise<void> {
   await AppDataSource.initialize();
 
-  const tagRepo = AppDataSource.getRepository(Tag);
-  const contactRepo = AppDataSource.getRepository(Contact);
+  const tagRepo: Repository<Tag> = AppDataSource.getRepository(Tag);
+  const contactRepo: Repository<Contact> = AppDataSource.getRepository(Contact);
 
   await contactRepo.createQueryBuilder().delete().execute();
 
@@ -18,7 +19,7 @@ async function seed() {
   const tagEntities: Tag[] = [];
 
   for (const name of TAGS) {
-    let tag = await tagRepo.findOne({ where: { name } });
+    let tag: Tag | null = await tagRepo.findOne({ where: { name } });
     if (!tag) {
       tag = tagRepo.create({ name });
       await tagRepo.save(tag);
@@ -27,7 +28,7 @@ async function seed() {
   }
 
   for (let i = 0; i < 150; i++) {
-    const contact = contactRepo.create({
+    const contact: Contact = contactRepo.create({
       fullName: faker.person.fullName(),
       email: faker.internet.email(),
       phoneNumber: faker.phone.number(),
