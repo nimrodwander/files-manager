@@ -23,7 +23,7 @@ export class App {
       this.app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
       });
-    } 
+    }
     catch (error) {
       console.error('Error during Data Source initialization', error)
     }
