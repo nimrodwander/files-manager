@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 
-//Defines the connection to the db with typeorm
 export const AppDataSource: DataSource = new DataSource({
   type: "mssql",
   host: "localhost",

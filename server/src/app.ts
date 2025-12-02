@@ -1,24 +1,19 @@
-import 'reflect-metadata';
-import express, { Application } from 'express';
-import { DataSource } from 'typeorm';
-import { Contact } from './entity/contact.entity';
-import { Tag } from './entity/tag.entity';
-import { ContactsRouter } from './routers/contacts.router';
-import { TagsRouter } from './routers/tags.router';
-import { errorHandler } from './middlewares/errorHandler.middleware';
-import { AppDataSource } from './config/data-source.config';
 import cors from "cors";
+import express, { Application } from 'express';
+import 'reflect-metadata';
+import { AppDataSource } from './config/db.config';
+import { errorHandler } from './middlewares/errorHandler.middleware';
+import { XRouter } from "./routers/router";
 
 export class App {
   public app: Application;
-  private _contactsRouter = new ContactsRouter();
-  private _tagsRouter = new TagsRouter();
+  private contactsRouter = new XRouter();
 
   constructor() {
     this.app = express();
-    this._initMiddlewares();
-    this._initRoutes();
-    this._initErrorHandling();
+    this.initMiddlewares();
+    this.initRouters();
+    this.initErrorHandling();
   }
 
   public async start(port: number): Promise<void> {
@@ -34,17 +29,16 @@ export class App {
     }
   }
 
-  private _initMiddlewares(): void {
+  private initMiddlewares(): void {
     this.app.use(cors());
     this.app.use(express.json())
   }
 
-  private _initRoutes(): void {
-    this.app.use('/api/contacts', this._contactsRouter.router);
-    this.app.use('/api/tags', this._tagsRouter.router);
+  private initRouters(): void {
+    this.app.use('/api/contacts', this.contactsRouter.router);
   }
 
-  private _initErrorHandling(): void {
+  private initErrorHandling(): void {
     this.app.use(errorHandler)
   }
 }
