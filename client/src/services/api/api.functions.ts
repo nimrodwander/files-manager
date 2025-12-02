@@ -1,9 +1,5 @@
-import { Logger } from "../errors";
+import { LoggerService } from "../errors/errors";
 
-/**
- * custom decorator for handling errors during fetching
- * replaces try catch repetative logic
-*/
 export function CatchHttpError(handler?: (error: any) => void) {
   return function (
     target: any,
@@ -28,23 +24,18 @@ export function CatchHttpError(handler?: (error: any) => void) {
   };
 }
 
-/**
- * Error handling for CRUD ops
- * Pass those functions into the CatchError decorator
- */
-
 export const get = (): void => {
-    throw Logger.error("Could not get data");
+    throw LoggerService.error("Could not get data");
 }
 
 export const put = (): void => {
-    Logger.error("Could not update data");
+    LoggerService.error("Could not update data");
 }
 
 export const post = (): void => {
-    throw Logger.error("Could not post data");
+    throw LoggerService.error("Could not post data");
 }
 
 export const remove = (): void => {
-    throw Logger.error("Could not delete data");
+    throw LoggerService.error("Could not delete data");
 }

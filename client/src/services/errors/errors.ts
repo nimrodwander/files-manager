@@ -1,4 +1,4 @@
-export class Logger{
+export class LoggerService{
     public static IIFEerror(message: string, error?: unknown){
         console.error(error);
         return (() => { throw new Error("ERROR: " + message); })();
