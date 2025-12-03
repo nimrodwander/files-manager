@@ -5,8 +5,10 @@ export class Store{
       makeAutoObservable(this);
   }
 
-  public async init(): Promise<void>{
+  public stocks: 
 
+  public async init(): Promise<void>{
+    
   }
 }
 

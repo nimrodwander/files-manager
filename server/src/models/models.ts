@@ -1,24 +1,28 @@
-// import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, Index } from "typeorm";
+export interface StocksResponse {
+    [symbol: string]: StockData;
+}
 
-// @Entity()
-// export class Contact {
-//   @PrimaryGeneratedColumn('uuid')
-//   id!: string;
+export interface StockData {
+    meta: StockMeta;
+    values: StockValue[];
+    status: string;
+}
 
-//   @Column()
-//   fullName!: string;
+export interface StockMeta {
+    symbol: string;
+    interval: string;
+    currency: string;
+    exchange_timezone: string;
+    exchange: string;
+    mic_code: string;
+    type: string;
+}
 
-//   @Column()
-//   email!: string;
-
-//   @Column()
-//   phoneNumber!: string;
-
-//   @ManyToMany(() => Tag, (tag) => tag.contacts, { eager: true })
-//   @JoinTable()
-//   tags!: Tag[];
-
-//   @CreateDateColumn()
-//   @Index()
-//   createdAt!: Date;
-// }
+export interface StockValue {
+    datetime: string;
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    volume: string;
+}

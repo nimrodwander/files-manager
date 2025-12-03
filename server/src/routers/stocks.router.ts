@@ -21,12 +21,22 @@ export class StocksRouter {
     const end = req.query.end as string;
 
     if (!idsParam) {
-      res.status(400).json({ error: "Query parameter 'ids' is required. Example: ?ids=SPY,AAPL,MSFT" });
+      res.status(400).json({error: "Parameter ids is missing"});
       return;
     }
 
     const ids = idsParam.split(',');
     const response = await this.twelveDataService.getStocks(ids, start, end);
-    res.status(response.status).json({ data: response.data });
+    const raw = response.data;
+
+    const transformed = Object.entries(raw).flatMap(([symbol, stockData]: any) => {
+      return stockData.values.map((v: any) => ({
+        id: symbol,
+        datetime: v.datetime,
+        close: v.close
+      }));
+    });
+
+    res.status(200).json({ data: transformed });
   }
 }
