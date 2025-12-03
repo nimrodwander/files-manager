@@ -1,14 +1,13 @@
 import cors from "cors";
 import express, { Application } from 'express';
-import 'reflect-metadata';
 import { errorHandler } from './middlewares/errorHandler.middleware';
-import { XRouter } from "./routers/router";
+import { StocksRouter } from "./routers/stocks.router";
 
 export class App {
   public app: Application;
-  private router = new XRouter();
+  private router = new StocksRouter();
 
-  constructor() {
+  constructor() { 
     this.app = express();
     this.initMiddlewares();
     this.initRouters();
@@ -32,7 +31,7 @@ export class App {
   }
 
   private initRouters(): void {
-    this.app.use('/api/router', this.router.router);
+    this.app.use('/api/stocks', this.router.router);
   }
 
   private initErrorHandling(): void {
