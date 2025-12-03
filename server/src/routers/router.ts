@@ -1,8 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Repository } from "typeorm";
-import { AppDataSource } from "../config/db.config";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
-import { Contact } from "../models/models";
 
 export class XRouter {
   public router: Router;
@@ -14,21 +11,27 @@ export class XRouter {
 
   private initRoutes(): void {
     this.router.delete('/:id', asyncHandler(this.deleteContact));
+    this.router.get('/health', asyncHandler(this.health));
   }
 
   private async deleteContact(req: Request, res: Response): Promise<void> {
-    const id: string = req.params.id;
+    // const id: string = req.params.id;
     
-    const contactRepo: Repository<Contact> = AppDataSource.getRepository(Contact);
-    const contact: Contact | null = await contactRepo.findOne({ where: { id } })
+    // const contactRepo: Repository<Contact> = AppDataSource.getRepository(Contact);
+    // const contact: Contact | null = await contactRepo.findOne({ where: { id } })
 
-    if (!contact) {
-      res.status(404).json({ error: 'Contact not found' });
-      return;
-    }
+    // if (!contact) {
+    //   res.status(404).json({ error: 'Contact not found' });
+    //   return;
+    // }
 
-    await contactRepo.remove(contact)
+    // await contactRepo.remove(contact)
 
-    res.status(200).json({ data: { id } })
+    // res.status(200).json({ data: { id } })
   }
+
+  private async health(req: Request, res: Response): Promise<void>{
+    res.status(200).json({data: {message: "hello world"}});
+  }
+
 }

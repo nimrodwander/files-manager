@@ -1,5 +1,5 @@
 import { App } from './app';
-import { PORT } from './config/env.config';
+import { ConfigService } from './services/config/config.service';
 
 const server: App = new App();
-server.start(PORT)
+server.start(ConfigService.port);

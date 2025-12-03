@@ -1,13 +1,12 @@
 import cors from "cors";
 import express, { Application } from 'express';
 import 'reflect-metadata';
-import { AppDataSource } from './config/db.config';
 import { errorHandler } from './middlewares/errorHandler.middleware';
 import { XRouter } from "./routers/router";
 
 export class App {
   public app: Application;
-  private contactsRouter = new XRouter();
+  private router = new XRouter();
 
   constructor() {
     this.app = express();
@@ -18,8 +17,6 @@ export class App {
 
   public async start(port: number): Promise<void> {
     try {
-      await AppDataSource.initialize()
-      console.log('Database connected')
       this.app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
       });
@@ -35,7 +32,7 @@ export class App {
   }
 
   private initRouters(): void {
-    this.app.use('/api/contacts', this.contactsRouter.router);
+    this.app.use('/api/router', this.router.router);
   }
 
   private initErrorHandling(): void {
