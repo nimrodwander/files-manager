@@ -8,15 +8,13 @@ import { AppLineChart } from './ui/LineChart';
 
 export const App: React.FC = () => {
     React.useEffect(() => {
-      store.init();
+      store.init(); 
     }, []);
     
   return (
      <BrowserRouter>
     <Box display={'flex'} flexDirection={'column'}>
       <Container>
-        <AppPieChart/>
-        <AppBarChart/>
         <AppLineChart/>
       </Container>
     </Box>

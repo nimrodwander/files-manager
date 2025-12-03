@@ -30,6 +30,14 @@ export class StocksRouter {
     const raw = response.data;
 
     const transformed = Object.entries(raw).flatMap(([symbol, stockData]: any) => {
+      if (!stockData.values) {
+        return [];
+      }
+
+      if (!Array.isArray(stockData.values)) {
+        return [];
+      }
+
       return stockData.values.map((v: any) => ({
         id: symbol,
         datetime: v.datetime,
