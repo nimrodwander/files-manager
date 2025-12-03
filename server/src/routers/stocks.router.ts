@@ -62,7 +62,6 @@ export class StocksRouter {
     const response = await this.twelveDataService.getStock(id, start, end);
     const raw = response.data;
 
-    // Normalize single-symbol response
     const transformed = (raw.values && Array.isArray(raw.values) ? raw.values : []).map((v: any) => ({
       id,
       datetime: v.datetime,

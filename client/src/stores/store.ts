@@ -15,8 +15,7 @@ export class Store{
 
 
   public async init(): Promise<void>{
-    const response: StocksCloseResponse = await apiService.get<StocksCloseResponse>(`/stocks/AAPL?start=${this.startDate}&end=${this.endDate}`);
-    console.log(response);
+    const response: StocksCloseResponse = await apiService.get<StocksCloseResponse>(`/stocks/${this.defaultStockName}?start=${this.startDate}&end=${this.endDate}`);
     this.setItems(response.data);
   }
 
