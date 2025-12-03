@@ -5,7 +5,7 @@ import { StocksRouter } from "./routers/stocks.router";
 
 export class App {
   public app: Application;
-  private router = new StocksRouter();
+  private stocksRouter = new StocksRouter();
 
   constructor() { 
     this.app = express();
@@ -31,7 +31,7 @@ export class App {
   }
 
   private initRouters(): void {
-    this.app.use('/api/stocks', this.router.router);
+    this.app.use('/api/stocks', this.stocksRouter.router);
   }
 
   private initErrorHandling(): void {

@@ -12,11 +12,21 @@ export class StocksRouter {
   }
 
   private initRoutes(): void {
-    this.router.get('/:id', asyncHandler(this.getStocks.bind(this)));
+    this.router.get('/', asyncHandler(this.getStocks.bind(this)));
   }
 
-  private async getStocks(req: Request, res: Response): Promise<void>{
-    const response = await this.twelveDataService.getStock('', '', '');
-    res.status(response.status).json({data: {message: response.data}});
+  private async getStocks(req: Request, res: Response): Promise<void> {
+    const idsParam = req.query.ids as string;
+    const start = req.query.start as string;
+    const end = req.query.end as string;
+
+    if (!idsParam) {
+      res.status(400).json({ error: "Query parameter 'ids' is required. Example: ?ids=SPY,AAPL,MSFT" });
+      return;
+    }
+
+    const ids = idsParam.split(',');
+    const response = await this.twelveDataService.getStocks(ids, start, end);
+    res.status(response.status).json({ data: response.data });
   }
 }
