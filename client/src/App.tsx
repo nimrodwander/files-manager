@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Container,
@@ -12,7 +12,9 @@ import {
   InputLabel,
   Stack,
 } from '@mui/material';
-import { CloudUpload, Delete, Download } from '@mui/icons-material';
+import { CloudUpload, Delete, Download, Google } from '@mui/icons-material';
+import { auth, googleProvider } from './firebase';
+import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
 
 interface FileItem {
   id: string;
@@ -23,6 +25,31 @@ interface FileItem {
 }
 
 export const App: React.FC = () => {
+  // Auth state
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log('Logged in as:', result.user.displayName, result.user.email);
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    console.log('User logged out');
+  };
+
+  // File manager state
   const [files, setFiles] = useState<FileItem[]>([
     { id: '1', name: 'Document1.pdf', date: '2025-12-01', size: 120, type: 'pdf' },
     { id: '2', name: 'Photo.png', date: '2025-11-30', size: 450, type: 'png' },
@@ -84,8 +111,36 @@ export const App: React.FC = () => {
 
   const fileTypes = Array.from(new Set(files.map((f) => f.type)));
 
+  // ---------- RENDER ----------
+  if (!user) {
+    // Show login button if not logged in
+    return (
+      <Container sx={{ mt: 10, textAlign: 'center' }}>
+        <Typography variant="h5" mb={2}>
+          Please log in to access your files
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<Google />}
+          onClick={handleLogin}
+          sx={{ borderRadius: 6, px: 4 }}
+        >
+          Sign in with Google
+        </Button>
+      </Container>
+    );
+  }
+
+  // Logged-in view
   return (
     <Container sx={{ mt: 4, mb: 8 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h6">Welcome, {user.displayName}</Typography>
+        <Button variant="outlined" onClick={handleLogout} sx={{ borderRadius: 5 }}>
+          Logout
+        </Button>
+      </Box>
+
       {/* Controls */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={2} alignItems="center">
         <TextField
@@ -94,9 +149,9 @@ export const App: React.FC = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           sx={{
-            minWidth: 380, // wider
+            minWidth: 380,
             '& .MuiOutlinedInput-root': {
-              borderRadius: '50px', // fully rounded
+              borderRadius: '50px',
             },
           }}
         />
@@ -141,14 +196,14 @@ export const App: React.FC = () => {
             sx={{
               width: 180,
               height: 140,
-              p: 2, // more padding
+              p: 2,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
               alignItems: 'center',
               textAlign: 'center',
               wordBreak: 'break-word',
-              borderRadius: 5, // rounded
+              borderRadius: 5,
             }}
           >
             <Typography variant="body2" fontWeight="bold">
@@ -158,18 +213,10 @@ export const App: React.FC = () => {
             <Typography variant="caption">{file.size} KB</Typography>
 
             <Stack direction="row" spacing={1}>
-              <Button
-                size="small"
-                onClick={() => handleDownload(file)}
-                sx={{ borderRadius: 5 }}
-              >
+              <Button size="small" onClick={() => handleDownload(file)} sx={{ borderRadius: 5 }}>
                 <Download fontSize="small" />
               </Button>
-              <Button
-                size="small"
-                onClick={() => handleDelete(file.id)}
-                sx={{ borderRadius: 5 }}
-              >
+              <Button size="small" onClick={() => handleDelete(file.id)} sx={{ borderRadius: 5 }}>
                 <Delete fontSize="small" />
               </Button>
             </Stack>
@@ -178,13 +225,7 @@ export const App: React.FC = () => {
       </Box>
 
       {/* Floating Upload Button */}
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 24,
-          left: 24,
-        }}
-      >
+      <Box sx={{ position: 'fixed', bottom: 24, left: 24 }}>
         <Button
           variant="contained"
           component="label"
@@ -192,12 +233,7 @@ export const App: React.FC = () => {
           sx={{ borderRadius: 6, px: 3 }}
         >
           Upload Files
-          <input
-            type="file"
-            hidden
-            multiple
-            onChange={handleUpload}
-          />
+          <input type="file" hidden multiple onChange={handleUpload} />
         </Button>
       </Box>
     </Container>
